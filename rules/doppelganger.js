@@ -6,13 +6,6 @@
 
 ;(function(){
 
-  // reference the game object
-  var g = window.game = window.game == undefined ? { } : window.game;
-
-  // refrence the controller.
-  // We perform any card manipulations through here.
-  var control = g.controller;
-
   // create our rules object
   var doppel = game.games.doppelganger = { };
   
@@ -27,10 +20,10 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:6, height:2},  // entire top row
-      'reserve': { col:1, row:1, width:1, height:1},  // bottom left
-      'waste': { col:2, row:1, width:1, height:1},    // next to reserve
-      'hand': { col:6, row:1, width:1, height:1}     // bottom right
+      'tableau': { col:1, row:2, width:6, height:2 },
+      'reserve': { col:1, row:1, width:1, height:1 },
+      'waste': { col:2, row:1, width:1, height:1 },
+      'hand': { col:6, row:1, width:1, height:1 }
     };
     
     layout.victory = {
@@ -46,34 +39,31 @@
   // Give the game rules
   doppel.requestRulesWording = function() {
     return `<h1>Doppelganger</h1>
-<p>A patience card game created by unpronounceable for Ludum Dare 35</p>
-<h3><a id="Goal_3"></a>Goal</h3>
-<p>Work your way through the stronghold (tableau), replacing people and spying to open up new options available to you. The goal is to find and replace the joker hidden within the stronghold.</p>
-<h3><a id="Spying_6"></a>Spying</h3>
-<p><em>Action: Tap a card</em><br>
-Spying is used to reveal cards in the Stronghold. Touch a face-up card at the bottom
-of a column that has the <em>same suit</em> as your Shape card. Adjacent cards are then revealed.</p>
-<h3><a id="Replacing_11"></a>Replacing</h3>
-<p><em>Action: Drag from stronghold to Hand</em><br>
-Replacing is used to work your way through the Stronghold. Aces low.</p>
-<ul>
-<li>Replace cards of the same color, if counting up.</li>
-<li>Replace cards of the opposite color, if counting down.</li>
-</ul>
-<h3><a id="Panic_17"></a>Panic</h3>
-<p><em>Action: Drag from reserve to hand</em>
-When you Panic you discard your current Shape and take the top card of the Reserve as your new Shape. You only get 5 reserve cards.</p>
-<h3><a id="Official_Rules_21"></a>Official Rules</h3>
-<p><a href="http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422">http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422</a></p>`;
+            <p>A patience card game created by unpronounceable for Ludum Dare 35</p>
+            <h3><a id="Goal_3"></a>Goal</h3>
+            <p>Work your way through the stronghold (tableau), replacing people and spying to open up new options available to you. The goal is to find and replace the joker hidden within the stronghold.</p>
+            <h3><a id="Spying_6"></a>Spying</h3>
+            <p><em>Action: Tap a card</em><br>
+            Spying is used to reveal cards in the Stronghold. Touch a face-up card at the bottom
+            of a column that has the <em>same suit</em> as your Shape card. Adjacent cards are then revealed.</p>
+            <h3><a id="Replacing_11"></a>Replacing</h3>
+            <p><em>Action: Drag from stronghold to Hand</em><br>
+            Replacing is used to work your way through the Stronghold. Aces low.</p>
+            <ul>
+            <li>Replace cards of the same color, if counting up.</li>
+            <li>Replace cards of the opposite color, if counting down.</li>
+            </ul>
+            <h3><a id="Panic_17"></a>Panic</h3>
+            <p><em>Action: Drag from reserve to hand</em>
+            When you Panic you discard your current Shape and take the top card of the Reserve as your new Shape. You only get 5 reserve cards.</p>
+            <h3><a id="Official_Rules_21"></a>Official Rules</h3>
+            <p><a href="http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422">http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422</a></p>`;
   };
   
   /**
    * Table deal function.
-   * cards is an array and can contain:
-   *   + a pile of cards
-   *   + an array of piles
    */
-  doppel.dealFunc = function(dealer, cards) {
+  doppel.requestDeal = function(dealer, cards) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.
@@ -138,7 +128,7 @@ When you Panic you discard your current Shape and take the top card of the Reser
     var draggedCard = dragged.cards[0];
     
     // look at our hand
-    var hand = control.peekByPile('hand');
+    var hand = game.controller.peekByPile('hand');
     
     // win condition
     if (hand && hand.value > 100) return;
@@ -147,10 +137,10 @@ When you Panic you discard your current Shape and take the top card of the Reser
     if (dragged.zone == 'reserve' && dropped.zone == 'hand') {
       
       // discard our hand
-      control.place(hand, 'waste')
+      game.controller.place(hand, 'waste')
       
       // place selected card into hand
-      control.place(draggedCard, 'hand');
+      game.controller.place(draggedCard, 'hand');
 
       // turn the hand card face up
       draggedCard.up = true;
@@ -185,17 +175,17 @@ When you Panic you discard your current Shape and take the top card of the Reser
         
         // win condition
         if (draggedCard.value > 100) {
-          control.won();
+          game.controller.won();
           canSwitch = true;
         }
         
         if (canSwitch) {
           
           // discard our hand
-          control.place(hand, 'waste')
+          game.controller.place(hand, 'waste')
           
           // place new card in hand
-          control.place(draggedCard, 'hand');
+          game.controller.place(draggedCard, 'hand');
           
           hand = draggedCard;
         }
@@ -213,15 +203,15 @@ When you Panic you discard your current Shape and take the top card of the Reser
           var pos = draggedCard.clickedColRow;
           
           // directly above
-          var acard = control.peekByRow('tableau', pos.col, Math.max(0, pos.row-1) );
+          var acard = game.controller.peekByRow('tableau', pos.col, Math.max(0, pos.row-1) );
           if (acard) acard.up = true;
 
           // to the left
-          acard = control.peekByRow('tableau', Math.max(0, pos.col-1), pos.row );
+          acard = game.controller.peekByRow('tableau', Math.max(0, pos.col-1), pos.row );
           if (acard) acard.up = true;
           
           // to the right
-          acard = control.peekByRow('tableau', Math.min(5, pos.col+1), pos.row );
+          acard = game.controller.peekByRow('tableau', Math.min(5, pos.col+1), pos.row );
           if (acard) acard.up = true;
           
         }
@@ -235,7 +225,7 @@ When you Panic you discard your current Shape and take the top card of the Reser
 
   doppel.setup = function() {
   
-    control.deal();
+    game.controller.deal();
     
   };
 

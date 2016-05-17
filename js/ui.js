@@ -57,6 +57,15 @@
   };
   
   /**
+   * Start a default game.
+   */
+  ui.startDefaultGame = function() {
+    if (!game.controller.gameName) {
+      game.ui.initialize('klondike');
+    }
+  };
+  
+  /**
    * Replay a game.
    */
   ui.replayGame = function() {
@@ -86,6 +95,7 @@
   ui.hideAboutPanel = function() {
     $('#ui-game-playfield').show();
     $('#game-ui-about').hide();
+    ui.startDefaultGame();
     ui.scrollToView();
   };
   
@@ -145,12 +155,14 @@
     var gameNames = Object.keys(game.games);
     var el = document.getElementById('all-games-list');
     gameNames.forEach(function(name) {
-      var anchor = document.createElement('a');
-      anchor.innerHTML = name; //.toUpperCase();
-      anchor.setAttribute("onclick", "game.ui.initialize('"+name+"')");
-      anchor.setAttribute("href", "#");
-      anchor.classList.add('list-group-item');
-      el.appendChild(anchor);
+      if (name != 'template') {
+        var anchor = document.createElement('a');
+        anchor.innerHTML = name; //.toUpperCase();
+        anchor.setAttribute("onclick", "game.ui.initialize('"+name+"')");
+        anchor.setAttribute("href", "#");
+        anchor.classList.add('list-group-item');
+        el.appendChild(anchor);
+      }
     });
   }
   

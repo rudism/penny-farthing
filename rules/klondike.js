@@ -20,9 +20,9 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:7, height:3},
-      'reserve': { col:1, row:1, width:1, height:1},
-      'waste': { col:2, row:1, width:1, height:1},
+      'tableau': { col:1, row:2, width:7, height:3 },
+      'reserve': { col:1, row:1, width:1, height:1 },
+      'waste': { col:2, row:1, width:1, height:1 },
       'A': { col:4, row:1, width:1, height:1 },
       'B': { col:5, row:1, width:1, height:1 },
       'C': { col:6, row:1, width:1, height:1 },
@@ -41,7 +41,18 @@
   
   // Give the game rules
   klondike.requestRulesWording = function() {
-    return '';
+    return `<h1>Klondike</h1>
+            <p>Klondike is one of the well known solitaire games.</p>
+            <h3><a id="Goal_3"></a>Goal</h3>
+            <p>Move all the cards to the foundation piles, A, B, C and D.</p>
+            <h3><a id="Play_6"></a>Play</h3>
+            <ul>
+            <li>Build stacks counting down by alternating color.</li>
+            <li>You can move entire stacks as long as they match this pattern.</li>
+            <li>Tap the reserve to flip new cards.</li>
+            <li>Tap the waste pile to recycle it back into the reserve.</li>
+            <li>Kings may be moved to empty columns.</li>
+            </ul>`;
   };
   
   /**
@@ -50,7 +61,7 @@
    *   + a pile of cards
    *   + an array of piles
    */
-  klondike.dealFunc = function(dealer, cards) {
+  klondike.requestDeal = function(dealer, cards) {
     
     // create a new deck, fill and shuffle it.
     var deck = dealer.new();
