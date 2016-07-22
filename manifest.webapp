@@ -1,0 +1,15 @@
+{
+  "name": "Solitaire",
+  "description": "Card games for one.",
+  "launch_path": "/index.html",
+  "icons": {
+    "128": "/assets/icon-128.png",
+    "175": "/assets/icon-175.png"
+  },
+  "orientation": ["landscape"],
+  "developer": {
+    "name": "wesleywerner",
+    "url": "https://github.com/rudism/penny-farthing"
+  },
+  "version": "0.1"
+}
